@@ -1,0 +1,107 @@
+###############################################
+# ChronoVision — MediaMTX configuration (Phase 10; FR-51/FR-54; D-62/D-63/D-65)
+#
+# This is the streaming gateway used only for *live viewing*. The vision worker keeps
+# pulling the same camera independently; killing MediaMTX must not affect monitoring,
+# events, or evidence.
+#
+# The backend owns every `paths:` entry through the Control API. Do NOT add camera
+# sources here: the backend validates and pins the camera address, adds the encrypted
+# credentials server-side, and only then registers the path.
+#
+# Run with the compose profile (see docker-compose.yml):
+#   docker compose --profile playback up -d mediamtx
+# or standalone (the backend must reach the API on 127.0.0.1:9997):
+#   mediamtx /path/to/mediamtx.yml
+#
+# Version reference: MediaMTX v1.21.x (Control API /v3, WHEP at /<path>/whep).
+###############################################
+
+logLevel: info
+logDestinations: [stdout]
+logStructured: false
+
+# --- Control API (backend -> gateway; keep on an internal/loopback address) ---
+api: true
+# The backend (MEDIAMTX_API_URL) reaches this. With Docker host networking this is
+# 127.0.0.1:9997; in a bridge network use :9997 and do not publish it to the LAN.
+apiAddress: 127.0.0.1:9997
+apiEncryption: false
+apiAllowOrigins: []
+apiTrustedProxies: []
+
+# --- Metrics / profiling / playback are not used by ChronoVision -----------------
+metrics: false
+pprof: false
+playback: false
+
+# --- RTSP server (optional; useful for ffprobe/ffplay diagnostics) ---------------
+rtsp: true
+rtspAddress: 127.0.0.1:8554
+rtspTransports: [tcp]
+rtspEncryption: "no"
+
+# --- WebRTC server (browser -> gateway WHEP) ------------------------------------
+webrtc: true
+# The dashboard fetches <MEDIAMTX_WEBRTC_URL>/<path>/whep. Bind all interfaces so a
+# browser on the LAN can reach it; restrict at the host firewall if that is not wanted.
+webrtcAddress: :8889
+webrtcEncryption: false
+# The dashboard is a different origin from the gateway; allow the WebRTC handshake.
+# Restrict this to your dashboard origin (e.g. ["https://dashboard.example.lan"]).
+webrtcAllowOrigins: ["*"]
+webrtcTrustedProxies: []
+# Gather the host's interface addresses so the browser receives a reachable ICE
+# candidate. On a multi-homed host, add the correct address to webrtcAdditionalHosts.
+webrtcIPsFromInterfaces: true
+webrtcIPsFromInterfacesList: []
+webrtcIPsFromInterfacesExcludeList: []
+webrtcAdditionalHosts: []
+webrtcLocalUDPAddress: :8189
+webrtcLocalTCPAddress: ""
+webrtcICEServers2: []
+webrtcHandshakeTimeout: 10s
+webrtcTrackGatherTimeout: 2s
+
+# --- Unused protocols (reduce the exposed surface) ------------------------------
+rtmp: false
+hls: false
+srt: false
+moq: false
+
+# --- Authentication -------------------------------------------------------------
+# Index 0: anonymous viewers/publishers. Paths are still created only by the backend
+#          through the loopback Control API below.
+# Index 1: Control API access from localhost only. This mirrors the stock MediaMTX
+#          default and lets the backend (host networking) use the API with no
+#          credentials. To expose the API on a non-loopback interface, add an
+#          authInternalUsers entry with a real user/pass and set
+#          MEDIAMTX_API_USERNAME/MEDIAMTX_API_PASSWORD to match.
+authMethod: internal
+authInternalUsers:
+  - user: any
+    pass:
+    ips: []
+    permissions:
+      - action: publish
+      - action: read
+      - action: playback
+  - user: any
+    pass:
+    ips: ["127.0.0.1", "::1"]
+    permissions:
+      - action: api
+
+# --- Defaults applied to every backend-created path -----------------------------
+pathDefaults:
+  # Pull the camera only while someone is watching (an idle camera is not reconnected).
+  sourceOnDemand: true
+  sourceOnDemandStartTimeout: 10s
+  sourceOnDemandCloseAfter: 10s
+  # Redirect validation: the backend never configures a `redirect` source (D-65); the
+  # camera source is an IP-pinned RTSP URL. `sourceRedirect` is NOT a redirect-following
+  # toggle — it names the target used only when `source: redirect`.
+  rtspTransport: tcp
+
+# Intentionally empty: the backend adds one `<prefix>-cam-<id>` path per camera.
+paths: {}

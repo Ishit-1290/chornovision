@@ -1,0 +1,65 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "chronovision-backend"
+version = "0.1.0"
+description = "ChronoVision backend: FastAPI application, validated configuration, and event services."
+requires-python = ">=3.11"
+# Phase 1 dependency surface: pydantic / pydantic-settings.
+# Phase 2 adds the web framework, database, migration tooling, and authentication.
+dependencies = [
+    "fastapi>=0.115,<1",
+    "uvicorn>=0.30,<1",
+    # Uvicorn needs a WebSocket protocol implementation for the dashboard socket
+    # (``/api/ws``). Without this extra the socket fails and realtime invalidation is inert.
+    "websockets>=13,<18",
+    "pydantic>=2.7,<3",
+    "pydantic-settings>=2.3,<3",
+    "sqlalchemy>=2.0,<3",
+    "alembic>=1.13,<2",
+    "psycopg[binary]>=3.2,<4",
+    "argon2-cffi>=23.1,<26",
+    # Encrypts per-camera stream credentials at rest (Phase 10; see D-64).
+    "cryptography>=43,<47",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2,<9",
+    "ruff>=0.6,<1",
+    "httpx>=0.27,<1",
+]
+# Phase 4 vision-worker runtime. Install the CPU-only PyTorch wheel first, then this extra,
+# so PyPI does not pull the CUDA build:
+#   pip install --index-url https://download.pytorch.org/whl/cpu torch torchvision
+#   pip install -e ".[dev,vision]"
+vision = [
+    "numpy>=2.0,<3",
+    "opencv-python-headless>=4.10,<6",
+    "ultralytics>=8.3,<9",
+    # supervision 0.31 removed the bundled ByteTrack tracker (split into the `trackers`
+    # package), so pin to the last range that still exports ``supervision.ByteTrack``.
+    "supervision>=0.28,<0.31",
+]
+
+[project.scripts]
+chronovision-admin = "app.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+# FastAPI declares dependencies as `Depends(...)` call expressions in argument
+# defaults; that is the framework's documented pattern and is safe here.
+ignore = ["B008"]

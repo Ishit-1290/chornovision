@@ -1,0 +1,69 @@
+# =============================================================================
+# ChronoVision .gitignore
+# Secrets, runtime data, recordings, evidence, databases, and caches must never
+# be committed. See AGENTS.md and workflow_requirements.md §6, §12, §16.
+# =============================================================================
+
+# --- Secrets / environment ---------------------------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# --- Python ------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+.python-version
+
+# --- Test / tooling caches ---------------------------------------------------
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# --- Node / frontend (added in Phase 7) --------------------------------------
+node_modules/
+frontend/dist/
+*.tsbuildinfo
+
+# --- Runtime data (never committed) ------------------------------------------
+data/
+*.sqlite
+*.sqlite3
+*.db
+
+# --- Recordings / evidence / model artifacts ---------------------------------
+# The runtime evidence tree is ignored, but the pattern is anchored to the repository
+# root so it does NOT match the source package `vision/evidence/` (or any other source
+# directory named `evidence`). The default `EVIDENCE_DIR` (`<repo>/data/evidence`) is
+# already covered by `data/` above; a repo-root `evidence/` is covered here.
+recordings/
+/evidence/
+*.pt
+*.pth
+*.onnx
+*.weights
+
+# --- Logs --------------------------------------------------------------------
+*.log
+logs/
+
+# --- OS / editor -------------------------------------------------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

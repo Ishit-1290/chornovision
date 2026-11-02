@@ -1,0 +1,17 @@
+{
+  "dataset": {
+    "name": "synthetic-sample",
+    "synthetic": true,
+    "notes": "Hand-authored synthetic labels used ONLY to demonstrate the evaluation tooling and its output format. This is NOT real footage and NOT a detection-accuracy result. Do not quote these numbers as detection quality."
+  },
+  "events": [
+    {"camera_id": 1, "event_type": "person_entering", "start_time": "2026-01-01T09:00:00+00:00", "end_time": "2026-01-01T09:00:03+00:00", "zone_id": "front_door"},
+    {"camera_id": 1, "event_type": "person_entering", "start_time": "2026-01-01T09:05:00+00:00", "end_time": "2026-01-01T09:05:02+00:00", "zone_id": "front_door"},
+    {"camera_id": 1, "event_type": "person_leaving", "start_time": "2026-01-01T09:06:00+00:00", "end_time": "2026-01-01T09:06:03+00:00", "zone_id": "front_door"},
+    {"camera_id": 1, "event_type": "room_occupancy_change", "start_time": "2026-01-01T09:01:00+00:00", "occupancy": 2},
+    {"camera_id": 1, "event_type": "room_occupancy_change", "start_time": "2026-01-01T09:04:00+00:00", "occupancy": 1},
+    {"camera_id": 1, "event_type": "person_motionless", "start_time": "2026-01-01T09:10:00+00:00", "end_time": "2026-01-01T09:12:00+00:00"},
+    {"camera_id": 1, "event_type": "package_left_at_entrance", "start_time": "2026-01-01T09:20:00+00:00", "end_time": "2026-01-01T09:20:00+00:00", "zone_id": "front_door"},
+    {"camera_id": 1, "event_type": "fall_from_bed", "start_time": "2026-01-01T09:30:00+00:00", "end_time": "2026-01-01T09:30:05+00:00", "uncertain": true}
+  ]
+}

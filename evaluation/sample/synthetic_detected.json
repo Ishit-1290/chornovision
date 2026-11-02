@@ -1,0 +1,18 @@
+{
+  "dataset": {
+    "name": "synthetic-sample",
+    "synthetic": true,
+    "notes": "Hand-authored synthetic 'detected' events paired with synthetic_labels.json. Used ONLY to demonstrate the evaluation tooling. Not real detector output; not a detection-accuracy claim."
+  },
+  "events": [
+    {"event_id": "det-0001", "camera_id": 1, "event_type": "person_entering", "start_time": "2026-01-01T09:00:01+00:00", "end_time": "2026-01-01T09:00:03+00:00", "zone_id": "front_door"},
+    {"event_id": "det-0002", "camera_id": 1, "event_type": "person_entering", "start_time": "2026-01-01T09:05:02+00:00", "end_time": "2026-01-01T09:05:04+00:00", "zone_id": "front_door"},
+    {"event_id": "det-0003", "camera_id": 1, "event_type": "person_leaving", "start_time": "2026-01-01T09:06:00+00:00", "end_time": "2026-01-01T09:06:03+00:00", "zone_id": "front_door"},
+    {"event_id": "det-0004", "camera_id": 1, "event_type": "room_occupancy_change", "start_time": "2026-01-01T09:01:01+00:00", "occupancy": 2},
+    {"event_id": "det-0005", "camera_id": 1, "event_type": "room_occupancy_change", "start_time": "2026-01-01T09:04:02+00:00", "occupancy": 3},
+    {"event_id": "det-0006", "camera_id": 1, "event_type": "person_motionless", "start_time": "2026-01-01T09:10:01+00:00", "end_time": "2026-01-01T09:11:58+00:00"},
+    {"event_id": "det-0007", "camera_id": 1, "event_type": "fall_from_bed", "start_time": "2026-01-01T09:30:02+00:00", "end_time": "2026-01-01T09:30:06+00:00"},
+    {"event_id": "det-0008", "camera_id": 1, "event_type": "person_entering", "start_time": "2026-01-01T09:15:00+00:00", "end_time": "2026-01-01T09:15:02+00:00", "zone_id": "front_door"},
+    {"event_id": "det-0009", "camera_id": 1, "event_type": "person_entering", "start_time": "2026-01-01T09:05:30+00:00", "end_time": "2026-01-01T09:05:32+00:00", "zone_id": "front_door"}
+  ]
+}

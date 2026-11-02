@@ -1,0 +1,69 @@
+# ChronoVision — local development services
+#
+# PostgreSQL is the only service required for the core system. The MediaMTX gateway is
+# optional and opt-in: it is used only for browser WebRTC/WHEP live viewing (Phase 10)
+# and is not started unless you ask for it with `--profile playback`.
+#
+# Usage:
+#   1. cp .env.example .env   and set POSTGRES_* values (POSTGRES_PASSWORD is required)
+#   2. docker compose up -d db
+#   3. docker compose ps      (wait for the health check to pass)
+#   Optional live playback:
+#   4. set LIVE_PLAYBACK_ENABLED=true and MEDIAMTX_* in .env, then
+#      docker compose --profile playback up -d mediamtx
+#
+# The database is bound to 127.0.0.1 only (SEC-09) and stores data in the named
+# volume `chronovision-db-data` so it survives container restarts.
+
+name: chronovision
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: chronovision-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: "${POSTGRES_DB:-chronovision}"
+      POSTGRES_USER: "${POSTGRES_USER:-chronovision}"
+      # Fails fast if POSTGRES_PASSWORD is not set in the environment/.env.
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in your .env file}"
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - chronovision-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        - "CMD-SHELL"
+        - "pg_isready -U ${POSTGRES_USER:-chronovision} -d ${POSTGRES_DB:-chronovision}"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # Browser-compatible WebRTC/WHEP gateway (Phase 10, Decision D-62/D-63).
+  # Pinned to MediaMTX v1.21.3. Not required for monitoring, events, or evidence.
+  mediamtx:
+    image: bluenviron/mediamtx:1.21.3
+    container_name: chronovision-mediamtx
+    restart: unless-stopped
+    profiles: ["playback"]
+    # Host networking lets MediaMTX advertise LAN-reachable WebRTC ICE candidates, which
+    # bridged containers cannot do reliably. Linux hosts only; on Docker Desktop use the
+    # bridge-network alternative documented in docs/LIVE_PLAYBACK.md.
+    network_mode: host
+    # No credentials are injected: the shipped config grants the Control API anonymously on
+    # loopback (127.0.0.1:9997), which is the only address the backend uses with host
+    # networking. For a non-loopback API, add an authInternalUsers user in the config and
+    # set MEDIAMTX_API_USERNAME/MEDIAMTX_API_PASSWORD in .env.
+    volumes:
+      - ./deploy/mediamtx.yml:/mediamtx.yml:ro
+
+volumes:
+  chronovision-db-data:
+    name: chronovision-db-data
+
+# Ports opened by the mediamtx service (host networking):
+#   8889/tcp  WebRTC/WHEP signaling + media over TCP (browser-facing)
+#   8189/udp  WebRTC ICE / media over UDP (browser-facing)
+#   9997/tcp  management API (loopback only; backend-facing)
+#   8554/tcp  RTSP diagnostics (loopback only; not part of the playback path)
