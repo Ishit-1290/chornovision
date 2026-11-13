@@ -1,4 +1,4 @@
-"""Bounded, durable worker→backend event handoff (Phase 6; OQ-09/D-12, FR-40).
+"""Bounded worker→backend event handoff with a best-effort disk spool (OQ-09/D-12, FR-40).
 
 The event engine publishes on the frame-processing thread, so publishing must never block:
 this module enqueues into a bounded in-memory queue and a single background thread performs
@@ -16,7 +16,10 @@ Per-camera isolation (Phase 8): each handoff owns only the spool files it wrote
 (``handoff-<camera_id>-*.json``). In a multi-camera worker process the spool directory is
 shared, but a camera's deliverer never reads or delivers another camera's spooled items, and
 the ``spool_max_bytes`` bound is applied **per camera** so one camera's backlog cannot evict
-another's. A restarted worker recovers only its own camera's spool.
+another's. A restarted worker recovers only its own camera's spool. The spool is
+best-effort rather than a write-ahead log: an item's file is removed before its delivery
+attempt, so a crash at exactly that moment can lose it (delivery is at-least-once only
+while the process is alive).
 """
 
 from __future__ import annotations

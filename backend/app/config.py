@@ -1,9 +1,9 @@
 """Typed, validated application configuration for ChronoVision.
 
-Phase 1 scope: load configuration from environment variables and optional ``.env``
-files, validate it, and fail fast when required values are missing or insecure.
-This module does not connect to PostgreSQL, define API routes, or implement
-authentication; those arrive in later phases.
+Loads configuration from environment variables and optional ``.env`` files, validates it,
+and fails fast when required values are missing or insecure. This module only defines the
+settings; connecting to PostgreSQL, defining routes, and authentication live in their own
+modules.
 
 Precedence (highest first): constructor arguments, process environment variables,
 ``<repo>/.env`` then ``backend/.env`` (later files take precedence), defaults.

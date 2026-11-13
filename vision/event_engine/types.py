@@ -48,7 +48,7 @@ class DoorState(StrEnum):
 
 @dataclass(frozen=True)
 class DoorStateObservation:
-    """A door-state observation. No Phase 4 detector produces these yet."""
+    """A door-state observation. No door-state producer is integrated yet."""
 
     state: DoorState
     zone_id: str | None = None
@@ -66,7 +66,7 @@ class Posture(StrEnum):
 
 @dataclass(frozen=True)
 class PoseObservation:
-    """A pose/posture observation. No Phase 4 pose model produces these yet."""
+    """A pose/posture observation. No pose producer is integrated yet."""
 
     track_id: int
     posture: Posture
@@ -137,5 +137,5 @@ class EventSink(Protocol):
 class NullEventSink:
     """A sink that discards transitions (Phase 5 default; no persistence yet)."""
 
-    def publish(self, transition: EventTransition) -> None:  # noqa: ARG002
+    def publish(self, transition: EventTransition) -> None:
         return None

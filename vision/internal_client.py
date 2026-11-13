@@ -99,7 +99,7 @@ def _urllib_transport(
 ) -> tuple[int, bytes]:
     request = urllib.request.Request(url, data=body, headers=headers, method=method)
     try:
-        with urllib.request.urlopen(request, timeout=timeout) as response:  # noqa: S310
+        with urllib.request.urlopen(request, timeout=timeout) as response:
             return int(response.status), response.read()
     except urllib.error.HTTPError as exc:  # non-2xx still carries a body
         return int(exc.code), exc.read()
@@ -227,8 +227,6 @@ class InternalClient:
         while True:
             try:
                 status, payload = self.transport(method, url, headers, body, self.timeout)
-            except InternalClientError:
-                raise
             except OSError as exc:
                 if attempt >= self.max_retries:
                     raise InternalClientError(str(exc)) from exc

@@ -170,8 +170,3 @@ def record_transition(db: Session, transition: EventTransition) -> EventRecordRe
 def get_event_by_id(db: Session, event_pk: int) -> Event | None:
     """Return a stored event by its internal primary key."""
     return events_repo.get_by_id(db, event_pk)
-
-
-def list_transitions(db: Session, event: Event) -> list[EventTransitionRecord]:
-    """Return the transition history for ``event`` (oldest first)."""
-    return events_repo.list_transitions(db, event.id)

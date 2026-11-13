@@ -13,8 +13,6 @@ import type { Size } from './useElementSize';
  */
 export type Rotation = 0 | 90 | 180 | 270;
 
-export const ROTATIONS: readonly Rotation[] = [0, 90, 180, 270];
-
 /** Assumed source aspect (16:9) until the video element reports its real dimensions. */
 export const DEFAULT_SOURCE: Size = { width: 16, height: 9 };
 

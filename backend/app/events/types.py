@@ -19,11 +19,13 @@ Design rules encoded here:
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import datetime
 from enum import StrEnum
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+
+from app.utils import ensure_utc
 
 
 class EventType(StrEnum):
@@ -94,13 +96,6 @@ class ReviewStatus(StrEnum):
     CONFIRMED = "confirmed"
     DISMISSED = "dismissed"
     CORRECTED = "corrected"
-
-
-def ensure_utc(value: datetime) -> datetime:
-    """Return ``value`` as a timezone-aware UTC datetime (naive means UTC)."""
-    if value.tzinfo is None:
-        return value.replace(tzinfo=UTC)
-    return value.astimezone(UTC)
 
 
 class EventSnapshot(BaseModel):

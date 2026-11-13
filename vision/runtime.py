@@ -17,13 +17,13 @@ import logging
 import signal
 import threading
 import time
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 
 from app.config import get_settings
 
 from vision.camera_manager.manager import CameraManager
 from vision.camera_manager.worker import CameraConfig, CameraWorker
-from vision.config import TrackerKind, get_vision_settings
+from vision.config import TrackerKind, VisionSettings, get_vision_settings
 from vision.detection.detector import YoloDetector
 from vision.event_handoff import EventHandoff
 from vision.evidence import EvidenceCoordinator, EvidenceManager, EvidencePolicy, EvidenceStore
@@ -41,7 +41,7 @@ def _configure_logging(level: str) -> None:
     logging.basicConfig(level=level, format="%(asctime)s %(levelname)s %(name)s %(message)s")
 
 
-def _tracker_for(settings) -> Tracker:
+def _tracker_for(settings: VisionSettings) -> Tracker:
     if settings.tracker is TrackerKind.IOU:
         return IoUTracker()
     return ByteTrackTracker()
@@ -50,9 +50,9 @@ def _tracker_for(settings) -> Tracker:
 def _build_coordinator(
     camera: CameraConfig,
     *,
-    settings,
+    settings: VisionSettings,
     client: InternalClient,
-    clock=time.monotonic,
+    clock: Callable[[], float] = time.monotonic,
     logger: logging.Logger,
 ) -> EvidenceCoordinator:
     """Build the per-camera event handoff + evidence capture coordinator."""
@@ -88,7 +88,7 @@ def _build_coordinator(
 def _build_worker(
     camera: CameraConfig,
     *,
-    settings,
+    settings: VisionSettings,
     client: InternalClient,
     coordinator: EvidenceCoordinator | None = None,
     logger: logging.Logger,
@@ -136,7 +136,9 @@ def _build_worker(
     )
 
 
-def build_supervisor(settings=None, *, client: InternalClient | None = None) -> Supervisor:
+def build_supervisor(
+    settings: VisionSettings | None = None, *, client: InternalClient | None = None
+) -> Supervisor:
     """Construct the supervisor and its manager (used by ``main`` and by tests)."""
     settings = settings or get_vision_settings()
     client = client or InternalClient(

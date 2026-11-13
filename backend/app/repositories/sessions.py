@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from sqlalchemy import select, update
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.models.auth_session import UserSession
@@ -28,14 +28,3 @@ def revoke(db: Session, session: UserSession) -> None:
     """Mark a single session as revoked."""
     session.revoked_at = utcnow()
     db.commit()
-
-
-def revoke_all_for_user(db: Session, user_id: int) -> int:
-    """Revoke every active session for a user; returns the number affected."""
-    result = db.execute(
-        update(UserSession)
-        .where(UserSession.user_id == user_id, UserSession.revoked_at.is_(None))
-        .values(revoked_at=utcnow())
-    )
-    db.commit()
-    return int(result.rowcount or 0)

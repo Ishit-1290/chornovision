@@ -95,7 +95,7 @@ export function OverviewPage() {
           <StatCard
             label="Events (recent)"
             value={events.isLoading ? '…' : String(events.data?.total ?? 0)}
-            hint="Total matching the default filter"
+            hint="Total events recorded"
           />
         </Grid>
       </Grid>

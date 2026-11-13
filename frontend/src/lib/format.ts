@@ -7,13 +7,6 @@ export function formatDateTime(value: string | null | undefined): string {
   return date.toLocaleString();
 }
 
-export function formatTime(value: string | null | undefined): string {
-  if (!value) return '—';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '—';
-  return date.toLocaleTimeString();
-}
-
 export function formatDuration(seconds: number | null | undefined): string {
   if (seconds === null || seconds === undefined) return '—';
   if (seconds < 60) return `${seconds.toFixed(1)} s`;
@@ -40,12 +33,7 @@ export function formatConfidence(confidence: number | null | undefined): string 
   return `${Math.round(confidence * 100)}%`;
 }
 
-/** Convert an event type identifier into a human label. */
-export function humanizeEventType(eventType: string): string {
-  return eventType.replace(/_/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
-}
-
-/** Convert a snake_case identifier into a capitalised label. */
+/** Convert a snake_case identifier (status, severity, event type, …) into a capitalised label. */
 export function humanizeToken(token: string): string {
   return token.replace(/_/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
 }

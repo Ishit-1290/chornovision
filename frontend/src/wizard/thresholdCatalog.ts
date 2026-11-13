@@ -152,10 +152,6 @@ export const THRESHOLD_DEFINITIONS: ThresholdDefinition[] = [
   },
 ];
 
-export const THRESHOLD_BY_KEY: Record<ThresholdKey, ThresholdDefinition> = Object.fromEntries(
-  THRESHOLD_DEFINITIONS.map((definition) => [definition.key, definition]),
-) as Record<ThresholdKey, ThresholdDefinition>;
-
 /** Thresholds relevant to the given event selection, in catalogue order. */
 export function thresholdsForEvents(events: Record<EventKey, boolean>): ThresholdDefinition[] {
   return THRESHOLD_DEFINITIONS.filter((definition) =>

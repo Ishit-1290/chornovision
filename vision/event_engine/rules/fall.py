@@ -139,7 +139,7 @@ class FallRule(BaseRule):
                 and frame.monotonic - state.on_bed_since
                 <= self.thresholds.fall_transition_window_seconds
             )
-            confidence = pose.confidence if pose is not None else None
+            confidence = pose.confidence
 
             if state.event is None:
                 if not recent_bed_transition and not in_floor:
@@ -241,8 +241,4 @@ class FallRule(BaseRule):
                 )
             del self._states[track_id]
 
-        limit = self.thresholds.max_tracked_entities
-        if len(self._states) > limit:
-            ordered = sorted(self._states.items(), key=lambda item: item[1].last_seen)
-            for track_id, _state in ordered[: len(self._states) - limit]:
-                del self._states[track_id]
+        self._trim_states(self._states)

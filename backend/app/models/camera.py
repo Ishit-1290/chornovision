@@ -1,9 +1,11 @@
 """Camera configuration and lifecycle-state model.
 
 A camera row holds the *configuration* (display name, stream reference, per-camera
-options, enabled flag) plus the current *lifecycle state* (``status``). Stream
-credentials are never stored: the stream-address validator rejects URLs containing
-embedded userinfo (see ``app/services/stream_validation.py`` and Decision D-21).
+options, enabled flag) plus the current *lifecycle state* (``status``). The stream-address
+validator rejects URLs containing embedded userinfo (see
+``app/services/stream_validation.py`` and Decision D-21), so plaintext credentials are
+never stored. Optional RTSP credentials (Phase 10) are stored only Fernet-encrypted
+(``stream_credentials_encrypted``, D-64) and are never returned or logged.
 """
 
 from __future__ import annotations

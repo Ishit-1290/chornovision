@@ -1,9 +1,8 @@
 """Per-camera lifecycle state machine (FR-03, ``../guidelines.md`` §6).
 
 Pure, side-effect-free transitions so they can be unit-tested without a database or a
-worker. The Phase 4 runtime will drive ``connecting → active``/``disconnected`` etc.;
-Phase 3 only drives *control-plane* transitions (``configured``/``stopped`` ↔
-``connecting``) from the monitoring commands, because no processing worker exists yet.
+worker. The vision worker drives ``connecting → active``/``disconnected`` etc. (Phase 4),
+while the monitoring control plane drives ``configured``/``stopped`` ↔ ``connecting``.
 
 Semantic note (FR-05): ``DISCONNECTED`` means the stream is unavailable. It is a
 stream-health state, never "connected but no activity", and there is deliberately no

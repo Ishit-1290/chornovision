@@ -15,8 +15,8 @@ import {
 } from '@mui/material';
 
 import type { Camera } from '../api/types';
-import { ApiError } from '../api/client';
 import { useCameraMutations, useMonitoringCommands, useMonitoringStatus } from '../hooks/queries';
+import { formatErrorText } from '../lib/errors';
 import { configToWizard, validateWizard, wizardToConfig } from './convert';
 import type { CameraConfiguration } from './convert';
 import { requiredRoles } from './eventCatalog';
@@ -85,13 +85,7 @@ export function ZoneSetupWizard({ camera, onClose }: ZoneSetupWizardProps) {
       setPhase('saved');
     } catch (caught) {
       setPhase('editing');
-      setSaveError(
-        caught instanceof ApiError
-          ? `${caught.message} (HTTP ${caught.status})`
-          : caught instanceof Error
-            ? caught.message
-            : 'Unexpected error saving the configuration.',
-      );
+      setSaveError(formatErrorText(caught, 'Unexpected error saving the configuration.'));
     }
   };
 

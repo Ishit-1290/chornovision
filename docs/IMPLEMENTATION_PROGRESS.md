@@ -58,6 +58,25 @@ against a local `ffmpeg` H.264 loop, and the feature is covered by backend integ
 component tests against a faked gateway). The Docker Compose `mediamtx` service was not exercised
 (no Docker daemon here).
 
+## Submission Review (2026-11-02)
+A code-quality / submission pass was run on branch `submission-review` (see D-76). It is
+**zero-behaviour cleanup only**: unused symbols, parameters, imports and dead code removed;
+duplicated helpers consolidated (`frontend/src/lib/errors.ts` `formatErrorText`, a single
+`humanizeToken`, `BaseRule._trim_states`); stale docstrings/comments corrected; and small
+typing/accessibility fixes (aria labels, `type="button"` on Retry, an explicit null guard instead
+of a `cameraId as number` cast). No API contract, DB schema, config format, event threshold, zone
+geometry, tracking, event semantic, migration, or monitoring lifecycle was changed.
+
+Re-verified after the pass: backend **511 passed**, vision **310 passed / 1 skipped**, frontend
+**114 passed** (17 files); backend/vision ruff and frontend eslint/prettier/typecheck clean; and
+`./scripts/verify.sh` PASSED (including the offline Alembic render).
+
+Three behaviour-changing defects were found and are **deferred for owner approval** (D-76):
+destructive `prune-evidence --dry-run`, 422 validation responses echoing raw request input
+(including passwords), and an unguarded `new Date(since).toISOString()` in `EventsPage` that can
+throw `RangeError`. A source-only submission ZIP was **not** created — it awaits review of the
+cleanup summary and the proposed file list.
+
 ## Session Handoff (start of next session)
 You are continuing ChronoVision. **Phases 1–11 are complete and verified.** Before doing anything,
 read `AGENTS.md`, this file, and the relevant parts of `../guidelines.md` /
@@ -68,8 +87,9 @@ Verified state (see §Phase 10, §Phase 11, and the D-72/D-73/D-74 sections for 
 vision ruff check/format clean. `scripts/verify.sh` passes end-to-end; `scripts/verify_migrations.sh` reports no
 drift;
 `scripts/verify_backup_restore.sh` passes on a disposable cluster. Migration head is
-`0004_camera_stream_credentials`. Nothing is committed — the entire tree is untracked (`git log`
-fails); **do not commit or push** without explicit approval.
+`0004_camera_stream_credentials`. The repository is on branch `submission-review` with a single
+commit `ee802bd`; the submission-review cleanup is **uncommitted**. **Do not commit or push**
+without explicit approval.
 
 Outstanding work is **optional and outside the current plan** (pick only if the user asks):
 real-footage labelled evaluation (procedure in `docs/EVALUATION.md`); real RTSP camera validation

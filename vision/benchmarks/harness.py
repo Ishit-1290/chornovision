@@ -16,7 +16,7 @@ a performance guarantee. `run_camera_benchmark` needs OpenCV + NumPy; the module
 lazily so importing it never requires them.
 
 * A real-YOLO mode is intentionally not automated here: no weights ship with the repository and
-  `vision.detector_weights` may download on first use. The harness records the configured
+  `VISION_DETECTOR_WEIGHTS` may download on first use. The harness records the configured
   detector mode so a real run can be reproduced by pointing `detector` at `YoloDetector`.
 """
 

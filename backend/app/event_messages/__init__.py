@@ -15,7 +15,7 @@ from app.event_messages.renderer import (
     render_event_message,
     sanitize_display_text,
 )
-from app.event_messages.templates import TEMPLATES, MessageTemplate, template_for
+from app.event_messages.templates import TEMPLATES, MessageTemplate
 
 __all__ = [
     "TEMPLATES",
@@ -27,5 +27,4 @@ __all__ = [
     "render_event",
     "render_event_message",
     "sanitize_display_text",
-    "template_for",
 ]

@@ -12,7 +12,6 @@ import type { EventQuery, RetentionTarget, ReviewStatus } from '../api/types';
 
 export const queryKeys = {
   health: ['health'] as const,
-  cameraHealth: ['camera-health'] as const,
   cameras: ['cameras'] as const,
   monitoring: ['monitoring'] as const,
   events: (query: EventQuery) => ['events', query] as const,
@@ -31,7 +30,7 @@ export function useCameras(pollMs = 5_000) {
     queryFn: camerasApi.listCameras,
     // The camera list carries the effective lifecycle status, which the backend projects
     // from worker heartbeats. Poll so a status change (e.g. a dead worker projected as
-    // ``disconnected``) becomes visible even when the realtime socket is unavailable.
+    // `disconnected`) becomes visible even when the realtime socket is unavailable.
     refetchInterval: pollMs,
   });
 }
@@ -64,13 +63,16 @@ export function useSettings() {
 }
 
 /**
- * Live playback status for one camera, polled while a player is open. ``cameraId`` is
- * ``null`` when the dialog is closed, which disables the query.
+ * Live playback status for one camera, polled while a player is open. `cameraId` is
+ * `null` when the dialog is closed, which disables the query.
  */
 export function useLivePlayback(cameraId: number | null, pollMs = 3_000) {
   return useQuery({
     queryKey: queryKeys.live(cameraId ?? -1),
-    queryFn: () => liveApi.getLivePlayback(cameraId as number),
+    queryFn: () => {
+      if (cameraId === null) throw new Error('Live playback queried without a camera id.');
+      return liveApi.getLivePlayback(cameraId);
+    },
     enabled: cameraId !== null,
     refetchInterval: pollMs,
     retry: false,
@@ -97,7 +99,6 @@ export function useMonitoringCommands() {
   const invalidate = () => {
     void queryClient.invalidateQueries({ queryKey: queryKeys.monitoring });
     void queryClient.invalidateQueries({ queryKey: queryKeys.cameras });
-    void queryClient.invalidateQueries({ queryKey: queryKeys.cameraHealth });
   };
 
   return {
@@ -111,7 +112,6 @@ export function useCameraMutations() {
   const queryClient = useQueryClient();
   const invalidate = () => {
     void queryClient.invalidateQueries({ queryKey: queryKeys.cameras });
-    void queryClient.invalidateQueries({ queryKey: queryKeys.cameraHealth });
     void queryClient.invalidateQueries({ queryKey: queryKeys.monitoring });
   };
 

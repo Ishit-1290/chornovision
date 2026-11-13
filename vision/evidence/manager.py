@@ -207,7 +207,7 @@ class EvidenceManager:
                 self._active.pop(collection.event_id, None)
                 self._finalise_locked(collection)
 
-    def on_stream_end(self, monotonic: float) -> None:  # noqa: ARG002 - symmetry with frames
+    def on_stream_end(self, monotonic: float) -> None:
         """Finalise every active capture when the stream/session ends."""
         with self._lock:
             pending = list(self._active.values())

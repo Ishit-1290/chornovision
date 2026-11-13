@@ -21,10 +21,10 @@ Policy (see Decision D-21):
 DNS-rebinding note. Hostname resolution at configuration time is **not** authoritative
 (the name can resolve differently, or be rebound, before a connection is opened), so it
 is disabled by default. :func:`validate_stream_reference` implements the address checks,
-including an opt-in resolving path used by tests, but the authoritative check must be
-performed by the connection-time code in Phase 4: resolve, verify every returned address
-with :func:`is_disallowed_address`, then **pin** the validated address for the connection.
-Redirect-following to a different, unvalidated address must likewise be refused.
+including an opt-in resolving path used by tests; the authoritative check is performed at
+connection time by the vision worker (``vision/net.py``, D-28): resolve, verify every
+returned address with :func:`is_disallowed_address`, then **pin** the validated address for
+the connection. Redirect-following to a different, unvalidated address is refused.
 """
 
 from __future__ import annotations
