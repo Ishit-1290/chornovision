@@ -1,7 +1,7 @@
 import { Alert, Box, CircularProgress, Stack } from '@mui/material';
 import type { ReactNode } from 'react';
 
-import { ApiError } from '../api/client';
+import { formatErrorText } from '../lib/errors';
 
 export function LoadingState({ label = 'Loading…' }: { label?: string }) {
   return (
@@ -14,12 +14,7 @@ export function LoadingState({ label = 'Loading…' }: { label?: string }) {
 
 /** Render a backend error honestly (status + detail) instead of inventing a message. */
 export function ErrorState({ error, onRetry }: { error: unknown; onRetry?: () => void }) {
-  const detail =
-    error instanceof ApiError
-      ? `${error.message} (HTTP ${error.status})`
-      : error instanceof Error
-        ? error.message
-        : 'Unexpected error';
+  const detail = formatErrorText(error);
   return (
     <Alert
       severity="error"
@@ -27,6 +22,7 @@ export function ErrorState({ error, onRetry }: { error: unknown; onRetry?: () =>
         onRetry ? (
           <Box
             component="button"
+            type="button"
             onClick={onRetry}
             sx={{ border: 0, background: 'none', cursor: 'pointer' }}
           >

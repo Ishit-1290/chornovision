@@ -1,5 +1,5 @@
 import { request } from './client';
-import type { EventDetail, EventListResponse, EventOrder, EventQuery, ReviewStatus } from './types';
+import type { EventDetail, EventListResponse, EventQuery, ReviewStatus } from './types';
 
 function buildQuery(query: EventQuery): string {
   const params = new URLSearchParams();
@@ -29,5 +29,3 @@ export function reviewEvent(
     body: { review_status: reviewStatus, note },
   });
 }
-
-export type { EventOrder };

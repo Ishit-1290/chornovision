@@ -72,6 +72,7 @@ function EvidenceCard({
               component="video"
               src={evidenceUrl(evidence.id)}
               controls
+              aria-label="Event clip evidence"
               sx={{ width: '100%', borderRadius: 1, border: '1px solid', borderColor: 'divider' }}
             />
           )}

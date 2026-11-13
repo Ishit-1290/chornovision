@@ -190,8 +190,4 @@ class MotionlessRule(BaseRule):
                 )
             del self._states[track_id]
 
-        limit = self.thresholds.max_tracked_entities
-        if len(self._states) > limit:
-            ordered = sorted(self._states.items(), key=lambda item: item[1].last_seen)
-            for track_id, _state in ordered[: len(self._states) - limit]:
-                del self._states[track_id]
+        self._trim_states(self._states)

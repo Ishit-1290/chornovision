@@ -17,7 +17,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any
 
-from app.events.lifecycle import can_transition, transition
+from app.events.lifecycle import transition
 from app.events.types import (
     Certainty,
     EventAction,
@@ -185,6 +185,15 @@ class BaseRule:
     def reset(self) -> None:
         """Clear all temporal state (called on every new connection and test reset)."""
 
+    def _trim_states(self, states: dict[int, Any]) -> None:
+        """Drop the oldest state entries beyond ``max_tracked_entities`` to bound memory."""
+        limit = self.thresholds.max_tracked_entities
+        if len(states) <= limit:
+            return
+        ordered = sorted(states.items(), key=lambda item: item[1].last_seen)
+        for track_id, _state in ordered[: len(states) - limit]:
+            del states[track_id]
+
     # -- event helpers ---------------------------------------------------------
     def _open(
         self,
@@ -240,7 +249,7 @@ class BaseRule:
         certainty: Certainty | None = None,
     ) -> EventTransition:
         at = ensure_utc(at)
-        if status is not active.status and not can_transition(active.status, status):
+        if status is not active.status:
             transition(active.status, status)  # raises InvalidEventTransition
         active.status = status
         active.last_updated_at = at

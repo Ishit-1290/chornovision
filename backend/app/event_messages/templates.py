@@ -101,8 +101,3 @@ FALLBACKS: dict[str, str] = {
 #: Placeholders that may appear in a template. Anything else is a programming error,
 #: not a user-input condition.
 ALLOWED_FIELDS: frozenset[str] = frozenset(FALLBACKS)
-
-
-def template_for(event_type: EventType) -> MessageTemplate:
-    """Return the fixed template for ``event_type``."""
-    return TEMPLATES[event_type]

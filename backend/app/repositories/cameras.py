@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from sqlalchemy import func, select
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.models.camera import Camera, CameraStatus
@@ -39,22 +39,8 @@ def list_by_statuses(db: Session, statuses: set[CameraStatus]) -> list[Camera]:
     )
 
 
-def set_status(db: Session, camera: Camera, status: CameraStatus) -> Camera:
-    """Persist a new lifecycle status for ``camera``."""
-    camera.status = status.value
-    db.commit()
-    db.refresh(camera)
-    return camera
-
-
 def save(db: Session, camera: Camera) -> Camera:
     """Commit pending changes to ``camera`` and refresh it."""
     db.commit()
     db.refresh(camera)
     return camera
-
-
-def count_by_status(db: Session) -> dict[str, int]:
-    """Return a mapping of status value to camera count."""
-    rows = db.execute(select(Camera.status, func.count()).group_by(Camera.status)).all()
-    return {status: int(count) for status, count in rows}

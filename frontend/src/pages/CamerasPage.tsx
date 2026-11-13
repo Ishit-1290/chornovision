@@ -35,7 +35,7 @@ import { LivePlaybackDialog } from '../components/LivePlaybackDialog';
 import { ZoneSetupWizard } from '../wizard/ZoneSetupWizard';
 import { EmptyState, ErrorState, LoadingState } from '../components/states';
 import type { Camera } from '../api/types';
-import { ApiError } from '../api/client';
+import { formatErrorText } from '../lib/errors';
 import { formatDateTime } from '../lib/format';
 
 interface CameraFormState {
@@ -99,7 +99,7 @@ export function CamerasPage() {
     setForm(toForm(camera));
   };
 
-  const editing = form?.id !== null && form !== null;
+  const editing = form !== null && form.id !== null;
 
   const submit = async () => {
     if (form === null) return;
@@ -161,13 +161,7 @@ export function CamerasPage() {
       }
       setForm(null);
     } catch (caught) {
-      setFormError(
-        caught instanceof ApiError
-          ? `${caught.message} (HTTP ${caught.status})`
-          : caught instanceof Error
-            ? caught.message
-            : 'Unexpected error',
-      );
+      setFormError(formatErrorText(caught));
     }
   };
 

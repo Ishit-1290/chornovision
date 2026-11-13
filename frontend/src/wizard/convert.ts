@@ -15,7 +15,6 @@ import { roundCoord } from './coordinates';
 import { rotationFromConfiguration } from '../lib/videoRotation';
 import {
   emptyEvents,
-  type EventKey,
   type ThresholdValues,
   type WizardBoundary,
   type WizardPoint,
@@ -29,7 +28,7 @@ import {
 export type CameraConfiguration = Record<string, unknown>;
 
 /** Roles the wizard is responsible for writing. */
-export const WIZARD_ROLES: ZoneRole[] = [
+const WIZARD_ROLES: ZoneRole[] = [
   'entrance_zone_id',
   'room_zone_id',
   'door_zone_id',
@@ -39,7 +38,7 @@ export const WIZARD_ROLES: ZoneRole[] = [
 ];
 
 /** Threshold keys the wizard exposes. */
-export const WIZARD_THRESHOLD_KEYS = THRESHOLD_DEFINITIONS.map((definition) => definition.key);
+const WIZARD_THRESHOLD_KEYS = THRESHOLD_DEFINITIONS.map((definition) => definition.key);
 
 const ZONE_ID_PATTERN = /^[a-z0-9][a-z0-9_-]{0,63}$/;
 const ZONE_KINDS: ZoneKind[] = [
@@ -305,9 +304,4 @@ export function newZoneId(kind: ZoneKind, existing: WizardZone[]): string {
     candidate = `${base}-${counter}`;
   }
   return candidate;
-}
-
-/** Convenience predicate for callers building UI. */
-export function isEventEnabled(events: Record<EventKey, boolean>, key: EventKey): boolean {
-  return events[key] === true;
 }

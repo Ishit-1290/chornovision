@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 
 from app.auth.dependencies import AuthContext, get_auth_context, get_csrf_auth_context
 from app.db import get_db
+from app.models.camera import Camera
 from app.repositories import audit as audit_repo
 from app.repositories import cameras as cameras_repo
 from app.schemas.camera import CameraCreate, CameraRead, CameraUpdate
@@ -21,7 +22,7 @@ from app.services.event_broadcaster import camera_notification, get_event_broadc
 router = APIRouter(prefix="/api/cameras", tags=["cameras"])
 
 
-def _get_camera_or_404(db: Session, camera_id: int):
+def _get_camera_or_404(db: Session, camera_id: int) -> Camera:
     camera = cameras_repo.get_by_id(db, camera_id)
     if camera is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Camera not found")

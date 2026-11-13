@@ -25,19 +25,11 @@ from typing import Any
 from app.evaluation.dataset import detected_from_rows, load_detected, load_labels
 from app.evaluation.metrics import OCCUPANCY_EVENT_TYPES, evaluate
 from app.evaluation.model import EvaluationReport
+from app.events.types import EventType
 
 # Every canonical event type, so the per-activity table is complete even when an activity has
 # no events in the sample (G §16.2 asks for per-activity reporting).
-ALL_ACTIVITIES = [
-    "person_entering",
-    "person_leaving",
-    "room_occupancy_change",
-    "crowd_forming",
-    "door_open_too_long",
-    "package_left_at_entrance",
-    "person_motionless",
-    "fall_from_bed",
-]
+ALL_ACTIVITIES = [event_type.value for event_type in EventType]
 
 
 def _json_ready(value: Any) -> Any:
@@ -73,14 +65,11 @@ def _print_table(report: EvaluationReport) -> None:
     print(header)
     print("-" * len(header))
     for item in report.per_activity:
-
-        def fmt(value: float | None) -> str:
-            return "-" if value is None else f"{value:.3f}"
-
         marker = " *" if item.event_type in OCCUPANCY_EVENT_TYPES else ""
         print(
             f"{item.event_type + marker:<26}{item.true_positives:>4}{item.false_positives:>4}"
-            f"{item.false_negatives:>4}{fmt(item.precision):>8}{fmt(item.recall):>8}{fmt(item.f1):>8}"
+            f"{item.false_negatives:>4}{_fmt(item.precision):>8}{_fmt(item.recall):>8}"
+            f"{_fmt(item.f1):>8}"
         )
     print("-" * len(header))
     print(

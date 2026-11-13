@@ -35,7 +35,7 @@ export const monitoringStatusFixture: MonitoringStatus = {
   cameras: [],
 };
 
-export const evidenceFixture: Evidence = {
+const evidenceFixture: Evidence = {
   id: 10,
   event_id: 1,
   media_type: 'snapshot',

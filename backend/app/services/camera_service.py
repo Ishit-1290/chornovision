@@ -31,10 +31,6 @@ class CameraNameConflict(CameraError):
     """A camera with the requested name already exists."""
 
 
-class CameraNotFound(CameraError):
-    """No camera exists with the requested id."""
-
-
 class InvalidStreamReference(CameraError):
     """The stream reference failed validation. ``reason`` is a machine-readable code."""
 

@@ -6,6 +6,7 @@ import VideocamIcon from '@mui/icons-material/Videocam';
 
 import { useAuth } from '../auth/useAuth';
 import { ApiError } from '../api/client';
+import { formatErrorText } from '../lib/errors';
 
 interface LocationState {
   from?: string;
@@ -37,11 +38,11 @@ export function LoginPage() {
       navigate(target, { replace: true });
     } catch (caught) {
       setError(
-        caught instanceof ApiError && caught.status === 401
-          ? 'Invalid username or password.'
-          : caught instanceof ApiError
-            ? `${caught.message} (HTTP ${caught.status})`
-            : 'Sign-in failed. Please try again.',
+        caught instanceof ApiError
+          ? caught.status === 401
+            ? 'Invalid username or password.'
+            : formatErrorText(caught)
+          : 'Sign-in failed. Please try again.',
       );
     } finally {
       setSubmitting(false);

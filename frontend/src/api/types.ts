@@ -187,17 +187,6 @@ export interface HealthStatus {
   database: 'ok' | 'unavailable';
 }
 
-export interface CameraHealthItem {
-  id: number;
-  status: CameraStatus;
-}
-
-export interface CameraHealthResponse {
-  count: number;
-  by_status: Record<string, number>;
-  cameras: CameraHealthItem[];
-}
-
 export interface LoginResponse {
   user: User;
   expires_at: string;

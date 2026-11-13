@@ -50,7 +50,6 @@ class _TrackState:
     side: int
     pending_side: int
     pending_count: int
-    pending_since_monotonic: float
     pending_since_at: datetime
     last_seen_frame: int
     last_crossing_monotonic: float | None = None
@@ -100,7 +99,6 @@ class BoundaryCrossingRule(BaseRule):
                     side=side,
                     pending_side=side,
                     pending_count=1,
-                    pending_since_monotonic=frame.monotonic,
                     pending_since_at=frame.observed_at,
                     last_seen_frame=self._frame_index,
                 )
@@ -118,7 +116,6 @@ class BoundaryCrossingRule(BaseRule):
             else:
                 state.pending_side = side
                 state.pending_count = 1
-                state.pending_since_monotonic = frame.monotonic
                 state.pending_since_at = frame.observed_at
 
             if state.pending_count < self.thresholds.boundary_confirm_frames:

@@ -15,8 +15,6 @@ from app.models.camera import CameraStatus
 
 #: The stream reference was rejected by connection-time SSRF enforcement.
 DETAIL_INSECURE_TARGET = "insecure_target"
-#: The target could not be resolved (hostname lookup failed).
-DETAIL_UNRESOLVABLE_TARGET = "unresolvable_target"
 #: The decoder could not open the stream.
 DETAIL_OPEN_FAILED = "open_failed"
 #: The decoder opened the stream but returned no decodable frame.
@@ -41,7 +39,3 @@ class WorkerHealth:
     state: CameraStatus
     detail: str | None
     metrics: dict[str, object]
-
-
-#: States in which a worker thread is still considered alive by the manager.
-TERMINAL_STATES: frozenset[CameraStatus] = frozenset({CameraStatus.FAILED})

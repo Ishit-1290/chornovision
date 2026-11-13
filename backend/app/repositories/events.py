@@ -3,20 +3,11 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any
 
 from sqlalchemy import Select, func, select
 from sqlalchemy.orm import Session
 
 from app.models.event import Event, EventTransitionRecord
-
-
-def add(db: Session, event: Event) -> Event:
-    """Persist a new ``event`` row and return it."""
-    db.add(event)
-    db.commit()
-    db.refresh(event)
-    return event
 
 
 def save(db: Session, event: Event) -> Event:
@@ -128,9 +119,3 @@ def count_events(
         until=until,
     )
     return int(db.execute(select(func.count()).select_from(query.subquery())).scalar_one())
-
-
-def summary_counts(db: Session) -> dict[str, Any]:
-    """Return per-status event counts (used by tests/health-style summaries)."""
-    rows = db.execute(select(Event.status, func.count()).group_by(Event.status)).all()
-    return {status: int(count) for status, count in rows}

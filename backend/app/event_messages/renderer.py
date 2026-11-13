@@ -123,7 +123,7 @@ def _whole_seconds(value: float | None, field: str) -> str:
     return str(max(0, int(round(value))))
 
 
-def _values(event_type: EventType, context: EventMessageContext) -> dict[str, str]:
+def _values(context: EventMessageContext) -> dict[str, str]:
     zone_name = sanitize_display_text(context.zone_name, fallback=FALLBACKS["zone_name"])
     bed_zone_name = sanitize_display_text(
         context.bed_zone_name if context.bed_zone_name is not None else context.zone_name,
@@ -167,7 +167,7 @@ def render_event_message(
         except Exception as exc:  # pydantic ValidationError
             raise MessageRenderError(f"invalid message metadata: {exc}") from exc
 
-    values = _values(resolved_type, validated)
+    values = _values(validated)
     return message_template.template.format_map(values)
 
 

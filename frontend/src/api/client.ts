@@ -49,7 +49,7 @@ async function parseError(response: Response): Promise<string> {
   return response.statusText || `Request failed with status ${response.status}`;
 }
 
-export interface RequestOptions {
+interface RequestOptions {
   method?: string;
   body?: unknown;
   headers?: Record<string, string>;

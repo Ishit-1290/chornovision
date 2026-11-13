@@ -10,14 +10,19 @@ unambiguous evidence status (FR-39).
 from __future__ import annotations
 
 import logging
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
 from vision.evidence.encoding import EvidenceEncoder, OpenCVEncoder
-from vision.evidence.paths import EvidencePathError, build_relative_path, evidence_root
+from vision.evidence.paths import (
+    EvidencePathError,
+    build_relative_path,
+    evidence_root,
+    resolve_within_root,
+)
 
 LOGGER = logging.getLogger("vision.evidence.store")
 
@@ -108,7 +113,7 @@ class EvidenceStore:
         event_id: str,
         media_type: str,
         captured_at: datetime,
-        writer,
+        writer: Callable[[Path], None],
         duration_seconds: float | None,
         require_frames: bool = False,
         frames: Sequence[Any] | None = None,
@@ -149,8 +154,6 @@ class EvidenceStore:
         )
 
     def _resolve(self, relative: str) -> Path:
-        from vision.evidence.paths import resolve_within_root
-
         return resolve_within_root(self.root, relative)
 
     def _unlink(self, path: Path) -> None:

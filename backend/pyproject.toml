@@ -7,8 +7,7 @@ name = "chronovision-backend"
 version = "0.1.0"
 description = "ChronoVision backend: FastAPI application, validated configuration, and event services."
 requires-python = ">=3.11"
-# Phase 1 dependency surface: pydantic / pydantic-settings.
-# Phase 2 adds the web framework, database, migration tooling, and authentication.
+# Backend runtime dependencies: web framework, database, migration tooling, and auth.
 dependencies = [
     "fastapi>=0.115,<1",
     "uvicorn>=0.30,<1",

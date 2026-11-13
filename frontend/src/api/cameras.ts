@@ -26,10 +26,6 @@ export function listCameras(): Promise<Camera[]> {
   return request<Camera[]>('/api/cameras');
 }
 
-export function getCamera(cameraId: number): Promise<Camera> {
-  return request<Camera>(`/api/cameras/${cameraId}`);
-}
-
 export function createCamera(payload: CameraCreatePayload): Promise<Camera> {
   return request<Camera>('/api/cameras', { method: 'POST', body: payload });
 }

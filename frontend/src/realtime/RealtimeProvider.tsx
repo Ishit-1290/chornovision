@@ -41,7 +41,6 @@ export function RealtimeProvider({ children, createSocket }: RealtimeProviderPro
         case 'camera':
           void queryClient.invalidateQueries({ queryKey: ['cameras'] });
           void queryClient.invalidateQueries({ queryKey: ['monitoring'] });
-          void queryClient.invalidateQueries({ queryKey: ['camera-health'] });
           break;
         case 'monitoring':
           void queryClient.invalidateQueries({ queryKey: ['monitoring'] });

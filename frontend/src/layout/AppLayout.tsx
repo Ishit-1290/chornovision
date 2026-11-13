@@ -74,7 +74,11 @@ export function AppLayout() {
           </Tooltip>
 
           <Tooltip title={user?.username ?? ''}>
-            <IconButton color="inherit" onClick={(event) => setAnchor(event.currentTarget)}>
+            <IconButton
+              color="inherit"
+              aria-label="Account menu"
+              onClick={(event) => setAnchor(event.currentTarget)}
+            >
               <PersonIcon />
             </IconButton>
           </Tooltip>

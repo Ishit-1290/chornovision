@@ -8,24 +8,11 @@ from sqlalchemy.orm import Session
 from app.models.evidence import Evidence, RetentionStatus
 
 
-def add(db: Session, evidence: Evidence) -> Evidence:
-    """Persist a new ``evidence`` row and return it."""
-    db.add(evidence)
-    db.commit()
-    db.refresh(evidence)
-    return evidence
-
-
 def save(db: Session, evidence: Evidence) -> Evidence:
     """Commit pending changes to ``evidence`` and refresh it."""
     db.commit()
     db.refresh(evidence)
     return evidence
-
-
-def commit(db: Session) -> None:
-    """Commit pending changes without refreshing a specific row."""
-    db.commit()
 
 
 def get_by_id(db: Session, evidence_id: int) -> Evidence | None:

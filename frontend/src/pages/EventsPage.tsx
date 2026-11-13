@@ -248,7 +248,6 @@ export function EventsPage() {
                 onPageChange={(_event, next) => setPage(next)}
                 rowsPerPage={PAGE_SIZE}
                 rowsPerPageOptions={[PAGE_SIZE]}
-                onRowsPerPageChange={() => {}}
               />
             </>
           )}

@@ -248,7 +248,7 @@ def evidence_file_path(evidence: Evidence) -> Path:
     return path
 
 
-def _evict(db: Session, evidence: Evidence, *, now: datetime) -> int:
+def _evict(evidence: Evidence, *, now: datetime) -> int:
     """Mark ``evidence`` deleted and best-effort unlink its file. Returns bytes freed."""
     freed = 0
     if evidence.relative_path:
@@ -298,7 +298,7 @@ def run_retention(
             remaining.append(row)
             continue
         if ensure_utc(row.captured_at) < cutoff:
-            report.bytes_freed += _evict(db, row, now=current)
+            report.bytes_freed += _evict(row, now=current)
             report.deleted += 1
             report.deleted_ids.append(row.id)
         else:
@@ -318,7 +318,7 @@ def run_retention(
             break
         row = remaining[index]
         size = int(row.file_size_bytes or 0)
-        report.bytes_freed += _evict(db, row, now=current)
+        report.bytes_freed += _evict(row, now=current)
         report.deleted += 1
         report.deleted_ids.append(row.id)
         total -= size

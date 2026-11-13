@@ -99,10 +99,6 @@ export const EVENT_DEFINITIONS: EventDefinition[] = [
   },
 ];
 
-export const EVENT_BY_KEY: Record<EventKey, EventDefinition> = Object.fromEntries(
-  EVENT_DEFINITIONS.map((definition) => [definition.key, definition]),
-) as Record<EventKey, EventDefinition>;
-
 /** Roles that the wizard can create/manage zones for, in display order. */
 export const ROLE_LABELS: Record<ZoneRole, string> = {
   entrance_zone_id: 'Entrance',
@@ -136,9 +132,4 @@ export function requiredRoles(events: Record<EventKey, boolean>): ZoneRole[] {
     }
   }
   return [...roles];
-}
-
-/** True when at least one selected event makes use of `role`. */
-export function roleIsRequired(events: Record<EventKey, boolean>, role: ZoneRole): boolean {
-  return requiredRoles(events).includes(role);
 }

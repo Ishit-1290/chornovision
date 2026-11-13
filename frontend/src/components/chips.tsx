@@ -1,7 +1,7 @@
 import { Chip } from '@mui/material';
 import type { ChipProps } from '@mui/material';
 
-import { humanizeEventType, humanizeToken } from '../lib/format';
+import { humanizeToken } from '../lib/format';
 import type {
   CameraStatus,
   Certainty,
@@ -105,5 +105,5 @@ export function RetentionStatusChip({ status }: { status: RetentionStatus }) {
 }
 
 export function EventTypeLabel({ eventType }: { eventType: EventType }) {
-  return <span>{humanizeEventType(eventType)}</span>;
+  return <span>{humanizeToken(eventType)}</span>;
 }

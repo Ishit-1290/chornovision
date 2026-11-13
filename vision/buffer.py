@@ -1,7 +1,6 @@
 """Bounded rolling frame buffer skeleton (FR-35, NFR-04).
 
-Phase 6 will use this to capture pre-event frames. Phase 4 only maintains it so the
-memory bound is real and testable from the start. The buffer is bounded by **both** a
+The evidence manager uses this to capture pre-event frames. The buffer is bounded by **both** a
 maximum number of items and a maximum approximate byte budget; the oldest item is evicted
 first. A single item larger than the byte budget is refused rather than stored, so memory
 can never grow past the budget because of one oversized frame.
